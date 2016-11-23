@@ -38,10 +38,7 @@ module.exports =
   config:
     replacements:
       type: 'object'
-      default:
-        '::': '∷'
-        '=>': '⇒'
-        '->': '→'
+      default: {}
     preserveWidth:
       type: 'boolean'
       default: yes
