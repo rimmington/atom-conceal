@@ -6,6 +6,9 @@
   "license": "MIT",
   "main": "./lib/conceal",
   "name": "conceal",
-  "repository": "https://github.com/tfausak/atom-conceal",
-  "version": "0.0.4"
+  "repository": "https://github.com/rimmington/atom-conceal",
+  "version": "0.0.5",
+  "dependencies": {
+    "lodash.throttle": ">=4.1 <5"
+  }
 }
