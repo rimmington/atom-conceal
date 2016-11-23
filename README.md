@@ -7,7 +7,8 @@ alternatives.
 
 ![Screenshot][]
 
-To configure Conceal, set the `replacements` option in your config.
+To configure Conceal, set the `replacements` option in your config. You can also
+configure Conceal to only run for particular languages by setting `grammars`.
 
 ``` cson
 # config.cson
@@ -15,6 +16,9 @@ To configure Conceal, set the `replacements` option in your config.
   conceal:
     replacements:
       ".": "∘"
+    grammars: [
+      "Haskell"
+    ]
 ```
 
 [atom]: https://atom.io

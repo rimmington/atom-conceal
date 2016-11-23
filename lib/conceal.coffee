@@ -5,9 +5,8 @@ class Concealer
   constructor: ->
     @subscriptions = new CompositeDisposable
 
-    @replacements = atom.config.get 'conceal.replacements'
-    @subscriptions.add atom.config.observe 'conceal.replacements', (newValue) =>
-      @replacements = newValue
+    @subToConfig 'replacements'
+    @subToConfig 'grammars'
 
     @subscriptions.add atom.workspace.onDidStopChangingActivePaneItem (paneItem) =>
       @updateEditor paneItem
@@ -16,6 +15,9 @@ class Concealer
       doUpdate = throttle (=> @updateEditor editor), 100, trailing: true
       @subscriptions.add (atom.views.getView editor)?.onDidChangeScrollTop doUpdate
       @subscriptions.add editor.onDidStopChanging doUpdate
+      @subscriptions.add editor.onDidChangeGrammar =>
+        # If we're too fast the changes get overridden
+        window.setTimeout doUpdate, 100
 
   dispose: ->
     @subscriptions.dispose()
@@ -23,6 +25,8 @@ class Concealer
   updateEditor: (editor) ->
     view = atom.views.getView editor
     return unless view
+
+    return unless (not @grammars.length) or editor.getGrammar?().name in @grammars
 
     for element in view.querySelectorAll '::shadow .line span:not(.concealed)'
       replacement = @replacements[element.textContent]
@@ -33,12 +37,21 @@ class Concealer
       unless atom.config.get 'conceal.preserveWidth'
         element.dataset.replacementLength = replacement.length
 
+  subToConfig: (name) ->
+    @[name] = atom.config.get "conceal.#{name}"
+    @subscriptions.add atom.config.observe "conceal.#{name}", (newValue) =>
+      @[name] = newValue
 
 module.exports =
   config:
     replacements:
       type: 'object'
       default: {}
+    grammars:
+      type: 'array'
+      default: []
+      items:
+        type: 'string'
     preserveWidth:
       type: 'boolean'
       default: yes
