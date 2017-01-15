@@ -28,7 +28,7 @@ class Concealer
 
     return unless (not @grammars.length) or editor.getGrammar?().name in @grammars
 
-    for element in view.querySelectorAll '::shadow .line span:not(.concealed)'
+    for element in view.querySelectorAll '.line span:not(.concealed)'
       replacement = @replacements[element.textContent]
       continue unless replacement
 
